@@ -25,7 +25,7 @@ export class GameManager {
     }
 
     removeUser(socket: WebSocket, userId: string) {
-        this.users = this.users.filter(user => user.userId !== userId);
+        this.users = this.users.filter(user => user.id !== userId);
         const gameIndex = this.games.findIndex(game => game.player1.socket === socket || game.player2.socket === socket);
         if (gameIndex !== -1) {
             const game = this.games[gameIndex];
@@ -39,7 +39,6 @@ export class GameManager {
             }
 
             else if (game.player2.socket === socket) {
-                game.player2 = null;
                 if (game.player1) {
                     game.player1.socket.send(JSON.stringify({ type: OPPONENT_DISCONNECTED }));
                 } else {
@@ -82,12 +81,12 @@ export class GameManager {
                             return;
                         }
                         if (!player1) {
-                            availableGame.player1 = socket
-                            player2?.send(JSON.stringify({ type: "OPPONENT_JOINED" }))
+                            availableGame.player1.socket = socket
+                            player2?.socket.send(JSON.stringify({ type: "OPPONENT_JOINED" }))
                         }
                         else if (!player2) {
-                            availableGame.player2 = socket
-                            player1?.send(JSON.stringify({ type: "OPPONENT_JOINED" }))
+                            availableGame.player2.socket = socket
+                            player1?.socket.send(JSON.stringify({ type: "OPPONENT_JOINED" }))
                         }
                         socket.send(JSON.stringify({
                             type: "GAME_JOINED",

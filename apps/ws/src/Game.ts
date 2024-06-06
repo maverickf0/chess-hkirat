@@ -40,10 +40,10 @@ export class Game {
             this.player1.socket.send(JSON.stringify({
                 type: INIT_GAME,
                 payload: {
-                    color: "white",
+                    color: "w",
                     gameId: this.gameId,
-                    whitePlayer:user.find((user)=>user.id==this.player1.id)?.name,
-                    blackPlayer:user.find((user)=>user.id==this.player2.id)?.name,
+                    whitePlayer:{name:user.find((user)=>user.id==this.player1.id)?.name,id:this.player1.id},
+                    blackPlayer:{name:user.find((user)=>user.id==this.player2.id)?.name,id:this.player2.id},
                     fen:this.board.fen(),
                     moves:[]
                 }
@@ -52,10 +52,10 @@ export class Game {
             this.player2.socket.send(JSON.stringify({
                 type: INIT_GAME,
                 payload: {
-                    color: "black",
+                    color: "b",
                     gameId: this.gameId,
-                    whitePlayer:user.find((user)=>user.id==this.player1.id)?.name,
-                    blackPlayer:user.find((user)=>user.id==this.player2.id)?.name,
+                    whitePlayer:{name:user.find((user)=>user.id==this.player1.id)?.name,id:this.player1.id},
+                    blackPlayer:{name:user.find((user)=>user.id==this.player2.id)?.name,id:this.player2.id}, 
                     fen:this.board.fen(),
                     moves:[],
                 }
@@ -176,17 +176,6 @@ export class Game {
             await db.game.update({
                 data:{
                     result,
-                    status:"COMPLETED"
-                },
-                where:{
-                    id:this.gameId,
-                }
-
-            })
-            
-            await db.game.update({
-                data:{
-                    result:result,
                     status:"COMPLETED"
                 },
                 where:{
